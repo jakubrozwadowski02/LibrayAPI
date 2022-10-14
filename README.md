@@ -9,6 +9,7 @@ To do list:
 - System wypożyczania
 - Profil użytkownika (ile wypożyczonych, termin oddania, powiadomienie na email o zaległościach)
 - Zestawienie użytkowników
+- I inne...
 
 
 Użyte technologie:
