@@ -20,6 +20,7 @@ namespace LibrayAPI.Services.CategoryService
         public async Task<List<GetCategoryDto>> GetAll()
         {
             var categories = await _context.Categories
+                .Include(c => c.Books)
                 .ToListAsync();
 
             var categoriesDtos = _mapper.Map<List<GetCategoryDto>>(categories);

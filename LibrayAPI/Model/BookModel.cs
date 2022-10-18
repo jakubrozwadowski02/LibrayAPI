@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibrayAPI.Model
 {
@@ -14,7 +15,7 @@ namespace LibrayAPI.Model
         public DateTime ReleaseDate { get; set; }
         public int AuthorId { get; set; }
         public AuthorModel? Author { get; set; }
-        public string CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public CategoryModel? Category { get; set; }
     }
 }
