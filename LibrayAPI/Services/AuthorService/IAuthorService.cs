@@ -7,7 +7,7 @@ namespace LibrayAPI.Services.AuthorService
         Task<List<GetAuthorDto>> GetAll();
         Task<GetAuthorDto> GetById(int id);
         Task<int> Add(AddAuthorDto addAuthor);
-        Task<bool> Update(int id, UpdateAuthorDto updateAuthor);
-        Task<bool> Delete(int id);
+        Task Update(int id, UpdateAuthorDto updateAuthor);
+        Task Delete(int id);
     }
 }

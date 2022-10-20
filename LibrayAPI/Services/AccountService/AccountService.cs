@@ -1,5 +1,6 @@
 ﻿using LibrayAPI.Data;
 using LibrayAPI.Dtos.User;
+using LibrayAPI.Exceptions;
 using LibrayAPI.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,14 +48,13 @@ namespace LibrayAPI.Services.AccountService
                 .Include(x => x.Role)
                 .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
+            if (user is null)
+                throw new BadRequestException("Invalid username or password");
 
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
             if (result == PasswordVerificationResult.Failed)
-            {
-                return null;
-                // BadRequestException
-            }
+                throw new BadRequestException("Invalid username or password");
 
             var claims = new List<Claim>()
             {

@@ -27,54 +27,29 @@ namespace LibrayAPI.Controllers
         {
             var category = await _categoryService.GetById(id);
 
-            if (category == null)
-            {
-                return NotFound();
-            }
-
             return Ok(category);
         }
 
         [HttpPost]
         public async Task<ActionResult<int>> Add([FromBody] AddCategoryDto addCategory)
         {
-            var category = await _categoryService.Add(addCategory);
-
-            if (category == 0)
-            {
-                return BadRequest();
-            }
+            await _categoryService.Add(addCategory);
 
             return Created("api/category/{int}", null);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<bool>> Update([FromRoute] int id, [FromBody] UpdateCategoryDto updateCategory)
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryDto updateCategory)
         {
-            if (updateCategory == null)
-            {
-                return BadRequest();
-            }
-
-            var updatedCategory = await _categoryService.Update(id, updateCategory);
-
-            if (!updatedCategory)
-            {
-                return NotFound();
-            }
+            await _categoryService.Update(id, updateCategory);
 
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> Delete([FromRoute]int id)
+        public async Task<ActionResult> Delete([FromRoute]int id)
         {
-            var isDeleted = await _categoryService.Delete(id);
-
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
+            await _categoryService.Delete(id);
 
             return NoContent();
         }

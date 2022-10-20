@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibrayAPI.Data;
 using LibrayAPI.Dtos.Book;
+using LibrayAPI.Exceptions;
 using LibrayAPI.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +34,8 @@ namespace LibrayAPI.Services.BookService
             var book = await _context.Books
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (book == null) return null;
+            if (book is null)
+                throw new NotFoundException("Book is not found");
 
             return _mapper.Map<GetBookDto>(book);
         }
@@ -42,20 +44,18 @@ namespace LibrayAPI.Services.BookService
         {
             var book = _mapper.Map<BookModel>(addBook);
 
-            if (book == null) return 0;
-
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
 
             return book.Id;
         }
-        public async Task<bool> Update(int id, UpdateBookDto updateBook)
+        public async Task Update(int id, UpdateBookDto updateBook)
         {
             var book = await _context.Books
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (book == null) return false;
-            if (book.Id != id) return false;
+            if (book is null)
+                throw new NotFoundException("Book is not found");
 
             book.Title = updateBook.Title;
             book.ISBN = updateBook.ISBN;
@@ -64,21 +64,18 @@ namespace LibrayAPI.Services.BookService
 
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
             var book = await _context.Books
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (book == null) return false;
+            if (book is null)
+                throw new NotFoundException("Book is not found");
 
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
-
-            return true;
         }
     }
 }

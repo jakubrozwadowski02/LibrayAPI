@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using LibrayAPI.Data;
 using LibrayAPI.Dtos.User;
 using LibrayAPI.Dtos.Validators;
+using LibrayAPI.Middleware;
 using LibrayAPI.Model;
 using LibrayAPI.Services.AccountService;
 using LibrayAPI.Services.AuthorService;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NLog.Web;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +32,10 @@ builder.Services.AddSwaggerGen();
 // Configure database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add NLog
+builder.Host.UseNLog();
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 // Services
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -60,7 +66,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+
 var app = builder.Build();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibrayAPI.Data;
 using LibrayAPI.Dtos.Category;
+using LibrayAPI.Exceptions;
 using LibrayAPI.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +34,8 @@ namespace LibrayAPI.Services.CategoryService
             var category = await _context.Categories
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (category == null) return null;
+            if (category is null)
+                throw new NotFoundException("Category not found");
 
             return _mapper.Map<GetCategoryDto>(category);
         }
@@ -42,20 +44,18 @@ namespace LibrayAPI.Services.CategoryService
         {
             var category = _mapper.Map<CategoryModel>(addCategory);
 
-            if (category == null) return 0;
-
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
             return category.Id;
         }
-        public async Task<bool> Update(int id, UpdateCategoryDto updateCategory)
+        public async Task Update(int id, UpdateCategoryDto updateCategory)
         {
             var category = await _context.Categories
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (category == null) return false;
-            if (category.Id != id) return false;
+            if (category is null)
+                throw new NotFoundException("Category not found");
 
             _mapper.Map<CategoryModel>(updateCategory);
 
@@ -64,21 +64,18 @@ namespace LibrayAPI.Services.CategoryService
 
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
-
-            return true;
         }
         
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
             var category = await _context.Categories
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (category == null) return false;
+            if (category is null)
+                throw new NotFoundException("Category not found");
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
     }

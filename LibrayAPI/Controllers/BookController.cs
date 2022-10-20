@@ -27,54 +27,29 @@ namespace LibrayAPI.Controllers
         {
             var book = await _bookService.GetById(id);
 
-            if (book == null)
-            {
-                return NotFound();
-            }
-
             return Ok(book);
         }
 
         [HttpPost]
         public async Task<ActionResult<int>> Add([FromBody] AddBookDto addBook)
         {
-            var book = await _bookService.Add(addBook);
-
-            if (book == 0)
-            {
-                return BadRequest();
-            }
+            await _bookService.Add(addBook);
 
             return Created("api/author/{int}", null);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<bool>> Update([FromRoute] int id, [FromBody] UpdateBookDto updateBook)
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] UpdateBookDto updateBook)
         {
-            if (updateBook == null)
-            {
-                return BadRequest();
-            }
-
-            var updatedBook = await _bookService.Update(id, updateBook);
-
-            if (!updatedBook)
-            {
-                return NotFound();
-            }
+            await _bookService.Update(id, updateBook);
 
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> Delete([FromRoute] int id)
+        public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            var isDeleted = await _bookService.Delete(id);
-
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
+            await _bookService.Delete(id);
 
             return NoContent();
         }

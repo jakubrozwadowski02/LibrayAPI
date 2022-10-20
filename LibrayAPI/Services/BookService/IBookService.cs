@@ -7,7 +7,7 @@ namespace LibrayAPI.Services.BookService
         Task<List<GetBookDto>> GetAll();
         Task<GetBookDto> GetById(int id);
         Task<int> Add(AddBookDto addAuthor);
-        Task<bool> Update(int id, UpdateBookDto updateAuthor);
-        Task<bool> Delete(int id);
+        Task Update(int id, UpdateBookDto updateAuthor);
+        Task Delete(int id);
     }
 }

@@ -27,11 +27,6 @@ namespace LibrayAPI.Controllers
         {
             var author = await _authorService.GetById(id);
 
-            if (author == null)
-            {
-                return NotFound();
-            }
-
             return Ok(author);
         }
 
@@ -40,10 +35,6 @@ namespace LibrayAPI.Controllers
         {
             var author = await _authorService.Add(addAuthor);
 
-            if (author == 0)
-            {
-                return BadRequest();
-            }
 
             return Created("api/author/{int}", null);
         }
@@ -51,17 +42,7 @@ namespace LibrayAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<bool>> Update([FromRoute] int id, [FromBody] UpdateAuthorDto updateAuthor)
         {
-            if (updateAuthor == null)
-            {
-                return BadRequest();
-            }
-
-            var updatedAuthor = await _authorService.Update(id, updateAuthor);
-
-            if (!updatedAuthor)
-            {
-                return NotFound();
-            }
+            await _authorService.Update(id, updateAuthor);
 
             return Ok();
         }
@@ -69,12 +50,7 @@ namespace LibrayAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete([FromRoute] int id)
         {
-            var isDeleted = await _authorService.Delete(id);
-
-            if (!isDeleted)
-            {
-                return NotFound();
-            }
+            await _authorService.Delete(id);
 
             return NoContent();
         }

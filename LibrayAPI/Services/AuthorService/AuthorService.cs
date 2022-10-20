@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibrayAPI.Data;
 using LibrayAPI.Dtos.Author;
+using LibrayAPI.Exceptions;
 using LibrayAPI.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,7 +35,8 @@ namespace LibrayAPI.Services.AuthorService
                 .Include(x => x.Books)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (author == null) return null;
+            if (author is null)
+                throw new NotFoundException("Author is not found");
 
             return _mapper.Map<GetAuthorDto>(author);
         }
@@ -43,20 +45,19 @@ namespace LibrayAPI.Services.AuthorService
         {
             var author = _mapper.Map<AuthorModel>(addAuthor);
 
-            if (author == null) return 0;
-
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
 
             return author.Id;
         }
-        public async Task<bool> Update(int id, UpdateAuthorDto updateAuthor)
+
+        public async Task Update(int id, UpdateAuthorDto updateAuthor)
         {
             var author = await _context.Authors
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (author == null) return false;
-            if (author.Id != id) return false;
+            if (author is null)
+                throw new NotFoundException("Author is not found");
 
             _mapper.Map<AuthorModel>(updateAuthor);
 
@@ -66,21 +67,18 @@ namespace LibrayAPI.Services.AuthorService
 
             _context.Authors.Update(author);
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task Delete(int id)
         {
             var author = await _context.Authors
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (author == null) return false;
+            if (author is null)
+                throw new NotFoundException("Author is not found");
 
             _context.Authors.Remove(author);
             await _context.SaveChangesAsync();
-
-            return true;
         }
     }
 }
